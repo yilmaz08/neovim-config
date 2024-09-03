@@ -23,7 +23,7 @@ require('packer').startup(function()
   -- PLUGINS
   use {
     'nvim-treesitter/nvim-treesitter',
-	run = ":TSUpdate"
+	-- run = ":TSUpdate"
   }
   
   use 'williamboman/mason-lspconfig.nvim'
@@ -245,9 +245,9 @@ require('cord').setup {
     workspace = 'in Arch Linux',                        -- Text to display when in a workspace (Empty string to disable)
   },
   buttons = {
-    -- {
-    --  label = 'View Repository',                -- Text displayed on the button
-    --  url = 'git',                              -- URL where the button leads to ('git' = automatically fetch Git repository URL)
+    --{
+	  --label = 'View Repository',                -- Text displayed on the button
+      --url = 'git',                              -- URL where the button leads to ('git' = automatically fetch Git repository URL)
     --},
     -- {
     --   label = 'View Plugin',
