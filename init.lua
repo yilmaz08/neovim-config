@@ -37,13 +37,6 @@ require('packer').startup(function()
   use 'hrsh7th/nvim-cmp'
   use 'L3MON4D3/LuaSnip'
   use 'onsails/lspkind.nvim'
-  use {
-    'vyfor/cord.nvim',
-    run = './build || .\\build',
-    config = function()
-      require('cord').setup()
-    end,
-  }
   use 'williamboman/mason.nvim'
   use 'folke/trouble.nvim'
   use 'hoob3rt/lualine.nvim'
