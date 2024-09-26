@@ -17,15 +17,26 @@ require('packer').startup(function()
 
   -- THEMES
   use 'catppuccin/nvim'
-  use 'navarasu/onedark.nvim'
-  use 'Mofiqul/vscode.nvim'
+  use 'tanvirtin/monokai.nvim'
 
   -- PLUGINS
+  use 'nvim-treesitter/nvim-treesitter'
   use {
-    'nvim-treesitter/nvim-treesitter',
-	-- run = ":TSUpdate"
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = "v3.x",
+	requires = {
+      "nvim-lua/plenary.nvim",
+	  "nvim-tree/nvim-web-devicons",
+	  "MunifTanjim/nui.nvim",
+	  "3rd/image.nvim"
+	}
   }
-  
+  use {
+	  'numToStr/Comment.nvim',
+	  config = function()
+        require('Comment').setup()
+		end
+  }
   use 'williamboman/mason-lspconfig.nvim'
   use 'neovim/nvim-lspconfig'
   use 'hrsh7th/cmp-nvim-lsp'
@@ -51,6 +62,20 @@ require('nvim-treesitter.configs').setup {
     additional_vim_regex_highlighting = false,
   },
 }
+-- }}}
+
+-- {{{ NEOTREE 
+require('neo-tree').setup({
+	filesystem = {
+		filtered_items = {
+			visible = true,
+			hide_dotfiles = false,
+			hide_gitignored = false,
+			hide_hidden = false
+		},
+		hijack_netrw_behavior = "open_default"
+	}
+})
 -- }}}
 
 -- {{{ LUALINE
@@ -146,17 +171,7 @@ local mason_lspconfig = require("mason-lspconfig")
 local lspconfig = require("lspconfig")
 
 mason.setup()
-mason_lspconfig.setup({
-  ensure_installed = {
-    "lua_ls",
-    "tsserver",
-    "emmet_ls",
-    "cssls",
-    "pyright",
-    "volar",
-    "gopls",
-  }
-});
+mason_lspconfig.setup();
 
 mason_lspconfig.setup_handlers {
   function (server_name)
