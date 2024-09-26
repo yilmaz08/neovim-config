@@ -13,44 +13,51 @@ vim.opt.shortmess:append("I")
 
 -- {{{ PACKAGES
 require('packer').startup(function()
-  use 'wbthomason/packer.nvim'  -- Package manager itself
+	use 'wbthomason/packer.nvim'  -- Package manager itself
 
-  -- THEMES
-  use 'catppuccin/nvim'
-  use 'tanvirtin/monokai.nvim'
+	-- THEMES
+	use 'catppuccin/nvim'
+	use 'tanvirtin/monokai.nvim'
 
-  -- PLUGINS
-  use 'nvim-treesitter/nvim-treesitter'
-  use {
-    'nvim-neo-tree/neo-tree.nvim',
-    branch = "v3.x",
-	requires = {
-      "nvim-lua/plenary.nvim",
-	  "nvim-tree/nvim-web-devicons",
-	  "MunifTanjim/nui.nvim",
-	  "3rd/image.nvim"
+	-- PLUGINS
+	use {"ellisonleao/glow.nvim", config = function() require("glow").setup() end}
+	use 'nvim-treesitter/nvim-treesitter'
+	use {
+		'nvim-neo-tree/neo-tree.nvim',
+		branch = "v3.x",
+		requires = {
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons",
+			"MunifTanjim/nui.nvim",
+			"3rd/image.nvim"
+		}
 	}
-  }
-  use {
-	  'numToStr/Comment.nvim',
-	  config = function()
-        require('Comment').setup()
+	use {
+		'numToStr/Comment.nvim',
+		config = function()
+			require('Comment').setup()
 		end
-  }
-  use 'williamboman/mason-lspconfig.nvim'
-  use 'neovim/nvim-lspconfig'
-  use 'hrsh7th/cmp-nvim-lsp'
-  use 'hrsh7th/cmp-buffer'
-  use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-cmdline'
+	}
+	use 'williamboman/mason-lspconfig.nvim'
+	use 'neovim/nvim-lspconfig'
+	use 'hrsh7th/cmp-nvim-lsp'
+	use 'hrsh7th/cmp-buffer'
+	use 'hrsh7th/cmp-path'
+	use 'hrsh7th/cmp-cmdline'
+	
+	use 'nvim-telescope/telescope.nvim'
 
-  use "lukas-reineke/indent-blankline.nvim"
-  use 'hrsh7th/nvim-cmp'
-  use 'L3MON4D3/LuaSnip'
-  use 'onsails/lspkind.nvim'
-  use 'williamboman/mason.nvim'
-  use 'folke/trouble.nvim'
-  use 'hoob3rt/lualine.nvim'
+	use "lukas-reineke/indent-blankline.nvim"
+	use 'hrsh7th/nvim-cmp'
+	use 'L3MON4D3/LuaSnip'
+	use 'onsails/lspkind.nvim'
+	use 'williamboman/mason.nvim'
+	use 'folke/trouble.nvim'
+	use 'hoob3rt/lualine.nvim'
+
+	use 'mrjones2014/smart-splits.nvim'
+	use 'mrjones2014/legendary.nvim'
+	use "numToStr/FTerm.nvim"
 end)
 -- }}}
 
@@ -66,6 +73,9 @@ require('nvim-treesitter.configs').setup {
 
 -- {{{ NEOTREE 
 require('neo-tree').setup({
+	popup_border_style = "rounded",
+    enable_git_status = true,
+    enable_diagnostics = true,
 	filesystem = {
 		filtered_items = {
 			visible = true,
@@ -208,6 +218,44 @@ lspconfig.rust_analyzer.setup({
 })
 -- }}}
 
+-- {{{ FTERM
+require('FTerm').setup({
+    border = 'double',
+    dimensions  = {
+        height = 0.9,
+        width = 0.9,
+    },
+})
+vim.keymap.set('t', '<F3>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
+-- }}}
+
+-- {{{ LEGENDARY
+require('legendary').setup({
+	keymaps = {
+		{ '<F2>', ':Neotree toggle<CR>' },
+		{ '<F3>', '<CMD>lua require("FTerm").toggle()<CR>' },
+		{ 'ff', '<cmd>Telescope find_files<cr>' },
+		{ 'fg', '<cmd>Telescope live_grep<cr>' },
+		{ 'fb', '<cmd>Telescope buffers<cr>' },
+		{ 'fh', '<cmd>Telescope help_tags<cr>' }
+	},
+	commands = {},
+	funcs = {},
+	autocmds = {},
+	extensions = {
+		smart_splits = {
+			directions = { 'h', 'j', 'k', 'l' },
+			mods = {
+				move = '<C>',
+				resize = '<M>',
+			},
+		},
+	},
+})
+
+-- }}}
+
 require("ibl").setup() -- indent blank lines
+require("telescope").setup()
 
 vim.cmd("colorscheme catppuccin-macchiato")
