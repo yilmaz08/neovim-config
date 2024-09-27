@@ -32,6 +32,7 @@ require('packer').startup(function()
 			"3rd/image.nvim"
 		}
 	}
+	use 'NvChad/nvim-colorizer.lua'
 	use {
 		'numToStr/Comment.nvim',
 		config = function()
@@ -58,6 +59,14 @@ require('packer').startup(function()
 	use 'mrjones2014/smart-splits.nvim'
 	use 'mrjones2014/legendary.nvim'
 	use "numToStr/FTerm.nvim"
+
+	use {
+		'goolord/alpha-nvim',
+		requires = { 'echasnovski/mini.icons' },
+		config = function ()
+			require'alpha'.setup(require'alpha.themes.dashboard'.config)
+		end
+	}
 end)
 -- }}}
 
@@ -182,7 +191,6 @@ local lspconfig = require("lspconfig")
 
 mason.setup()
 mason_lspconfig.setup();
-
 mason_lspconfig.setup_handlers {
   function (server_name)
     lspconfig[server_name].setup {}
@@ -257,5 +265,6 @@ require('legendary').setup({
 
 require("ibl").setup() -- indent blank lines
 require("telescope").setup()
+require("colorizer").setup()
 
 vim.cmd("colorscheme catppuccin-macchiato")
