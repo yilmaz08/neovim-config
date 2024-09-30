@@ -22,7 +22,6 @@ require('packer').startup(function()
 
 	-- Themes
 	use 'catppuccin/nvim'
-	use 'tanvirtin/monokai.nvim'
 
 	-- Neo-Tree (File Explorer)
 	use 'nvim-neo-tree/neo-tree.nvim'
@@ -61,6 +60,8 @@ require('packer').startup(function()
 	use 'numToStr/FTerm.nvim' -- Floating Terminal
 	use 'lewis6991/gitsigns.nvim' -- Git Signs
 	use 'ellisonleao/glow.nvim' -- Markdown previewer
+	use 'f-person/git-blame.nvim' -- Git Blame
+	use 'folke/trouble.nvim' -- Diagnostics
 end)
 -- }}}
 
@@ -197,6 +198,8 @@ require('legendary').setup({
 	keymaps = {
 		{ '<F2>', ':Neotree toggle<CR>' },
 		{ '<F3>', ':lua require("FTerm").toggle()<CR>' },
+		{ '<F4>', ':GitBlameToggle<CR>' },
+		{ '<F5>', ':Trouble diagnostics<CR>' },
 		{ 'ff', ':Telescope find_files<CR>' },
 		{ 'fg', ':Telescope live_grep<CR>' },
 		{ 'fb', ':Telescope buffers<CR>' },
@@ -247,10 +250,12 @@ require('barbar').setup({
 })
 -- }}}
 
+require('gitblame').setup({ enabled = false })
 require('Comment').setup()
 require('ibl').setup()
 require('telescope').setup()
 require('colorizer').setup()
 require('glow').setup()
+require('trouble').setup()
 
 vim.cmd("colorscheme catppuccin-macchiato")
