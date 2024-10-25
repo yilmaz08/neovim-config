@@ -7,7 +7,10 @@ vim.opt.shiftwidth = 4
 
 vim.opt.fillchars = { eob = ' ' }
 
-vim.opt.foldmethod = 'marker'
+-- vim.opt.foldmethod = 'marker'
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
+vim.wo.foldlevel = 99
 
 vim.opt.shortmess:append("I")
 
