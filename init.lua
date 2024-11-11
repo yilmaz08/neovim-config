@@ -65,6 +65,14 @@ require('packer').startup(function()
 	use 'ellisonleao/glow.nvim' -- Markdown previewer
 	use 'f-person/git-blame.nvim' -- Git Blame
 	use 'folke/trouble.nvim' -- Diagnostics
+
+	use {
+		'goolord/alpha-nvim',
+		requires = { 'echasnovski/mini.icons' },
+		config = function ()
+			require'alpha'.setup(require'alpha.themes.dashboard'.config)
+		end
+	}
 end)
 -- }}}
 
