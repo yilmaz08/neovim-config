@@ -25,6 +25,7 @@ require('packer').startup(function()
 
 	-- Themes
 	use 'catppuccin/nvim'
+	use 'folke/tokyonight.nvim'
 
 	-- Neo-Tree (File Explorer)
 	use 'nvim-neo-tree/neo-tree.nvim'
@@ -282,4 +283,4 @@ require('colorizer').setup()
 require('glow').setup()
 require('trouble').setup()
 
-vim.cmd("colorscheme catppuccin-macchiato")
+vim.cmd("colorscheme tokyonight-night")
