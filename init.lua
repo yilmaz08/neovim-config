@@ -5,12 +5,14 @@ vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 
-vim.opt.fillchars = { eob = ' ' }
+vim.opt.fillchars = { eob = ' ', fold = ' ', foldclose = ' ', foldopen = ' ', foldsep = ' ' }
 
--- vim.opt.foldmethod = 'marker'
-vim.wo.foldmethod = 'expr'
-vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
-vim.wo.foldlevel = 99
+vim.o.foldcolumn = '0'
+vim.o.foldlevel = 99
+vim.o.foldenable = true
+vim.o.foldlevelstart = 99
+
+vim.o.wrap = false
 
 vim.opt.shortmess:append("I")
 
@@ -51,7 +53,10 @@ require('packer').startup(function()
 	use 'hrsh7th/nvim-cmp' -- Completions
 	use 'L3MON4D3/LuaSnip' -- Snippet Engine
 
+
 	-- OTHER
+	use {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'} -- Modern folds
+	use 'ya2s/nvim-cursorline' -- Highlight cursor words and lines
 	use 'nvim-treesitter/nvim-treesitter' -- Highlighter
 	use 'NvChad/nvim-colorizer.lua' -- Colorizer
 	use 'numToStr/Comment.nvim' -- Auto-comment
@@ -66,6 +71,7 @@ require('packer').startup(function()
 	use 'ellisonleao/glow.nvim' -- Markdown previewer
 	use 'f-person/git-blame.nvim' -- Git Blame
 	use 'folke/trouble.nvim' -- Diagnostics
+	use 'chentoast/marks.nvim' -- Simple marks to move around
 
 	use {
 		'goolord/alpha-nvim',
@@ -225,22 +231,18 @@ require('legendary').setup({
 		{ '<F3>', ':lua require("FTerm").toggle()<CR>' },
 		{ '<F4>', ':GitBlameToggle<CR>' },
 		{ '<F5>', ':Trouble diagnostics<CR>' },
+
 		{ 'ff', ':Telescope find_files<CR>' },
 		{ 'fg', ':Telescope live_grep<CR>' },
 		{ 'fb', ':Telescope buffers<CR>' },
 		{ 'fh', ':Telescope help_tags<CR>' },
+		{ 'fc', ':Telescope colorscheme<CR>'},
+
+		{ 'zR', ':lua require("ufo").openAllFolds()<CR>' },
+		{ 'zM', ':lua require("ufo").closeAllFolds()<CR>' },
+
 		{ 'gt', ':BufferNext<CR>' },
 		{ 'gT', ':BufferPrevious<CR>' },
-		{ '<A-1>', ':BufferGoto 1<CR>' },
-		{ '<A-2>', ':BufferGoto 2<CR>' },
-		{ '<A-3>', ':BufferGoto 3<CR>' },
-		{ '<A-4>', ':BufferGoto 4<CR>' },
-		{ '<A-5>', ':BufferGoto 5<CR>' },
-		{ '<A-6>', ':BufferGoto 6<CR>' },
-		{ '<A-7>', ':BufferGoto 7<CR>' },
-		{ '<A-8>', ':BufferGoto 8<CR>' },
-		{ '<A-9>', ':BufferGoto 9<CR>' },
-		{ '<A-0>', ':BufferLast<CR>' },
 		{ '<A-c>', ':BufferClose<CR>' },
 		{ '<A-p>', ':BufferPin<CR>' },
 		{ '<A-Left>', ':BufferPrevious<CR>' },
@@ -273,6 +275,68 @@ require('barbar').setup({
 	},
 	tabpages = false,
 })
+-- }}}
+
+-- {{{ UFO
+local ufo_handler = function(virtText, lnum, endLnum, width, truncate)
+    local newVirtText = {}
+    local suffix = (' 󰁂 %d '):format(endLnum - lnum)
+    local sufWidth = vim.fn.strdisplaywidth(suffix)
+    local targetWidth = width - sufWidth
+    local curWidth = 0
+    for _, chunk in ipairs(virtText) do
+        local chunkText = chunk[1]
+        local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+        if targetWidth > curWidth + chunkWidth then
+            table.insert(newVirtText, chunk)
+        else
+            chunkText = truncate(chunkText, targetWidth - curWidth)
+            local hlGroup = chunk[2]
+            table.insert(newVirtText, {chunkText, hlGroup})
+            chunkWidth = vim.fn.strdisplaywidth(chunkText)
+            -- str width returned from truncate() may less than 2nd argument, need padding
+            if curWidth + chunkWidth < targetWidth then
+                suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+            end
+            break
+        end
+        curWidth = curWidth + chunkWidth
+    end
+    table.insert(newVirtText, {suffix, 'MoreMsg'})
+    return newVirtText
+end
+
+require('ufo').setup({
+	fold_virt_text_handler = ufo_handler,
+    provider_selector = function(bufnr, filetype, buftype)
+        return {'treesitter', 'indent'}
+    end
+})
+-- }}}
+
+-- {{{ Cursor Line
+require('nvim-cursorline').setup({
+	cursorline = {
+		enable = true,
+		timeout = 0,
+		number = false,
+	},
+	cursorword = {
+		enable = true,
+		min_length = 3,
+		hl = { underline = true },
+	}
+})
+-- }}}
+
+-- {{{ Marks
+require'marks'.setup {
+	sign_priority = { lower=10, upper=15, builtin=8, bookmark=20 },
+	bookmark_0 = {
+		sign = "⚑",
+		annotate = true,
+	},
+}
 -- }}}
 
 require('gitblame').setup({ enabled = false })
