@@ -195,7 +195,7 @@ require('lazy').setup({
 			end
 		},
 
-		-- Cursorline & Word highlight
+		-- Cursorline
 		{
 			'ya2s/nvim-cursorline',
 			opts = {
@@ -205,7 +205,7 @@ require('lazy').setup({
 					number = false,
 				},
 				cursorword = {
-					enable = true,
+					enable = false,
 					min_length = 3,
 					hl = { underline = true },
 				}
@@ -225,11 +225,18 @@ require('lazy').setup({
 		},
 
 		-- Indent lines
-		{ 
-			'lukas-reineke/indent-blankline.nvim', 
-			config = function()
-				require("ibl").setup({})
-			end
+		{
+		    "lukas-reineke/indent-blankline.nvim",
+		    main = "ibl",
+		    ---@module "ibl"
+		    ---@type ibl.config
+		    opts = {
+				exclude = {
+					filetypes = {
+						'dashboard'
+					}
+				}
+			},
 		},
 
 		-- Modern folds
@@ -362,6 +369,32 @@ require('lazy').setup({
 					end,
 				})
 			end,
+		},
+
+		-- Dashboard
+		{
+			'nvimdev/dashboard-nvim',
+			event = 'VimEnter',
+			opts = {
+				theme = 'doom',
+				hide = { tabline = true },
+				config = {
+					week_header = { enable = true },
+					center = {
+						{ action = 'ene | startinsert', desc = ' new file', icon = ' ', key = 'e' },
+						{ action = 'Telescope find_files', desc = ' find file', icon = ' ', key = 'f' },
+						{ action = 'Telescope find_files', desc = ' find file', icon = ' ', key = 'r' },
+						{ action = 'e ~/.config/nvim/init.lua', desc = ' config', icon = ' ', key = 'c' },
+						{ action = 'qa', desc = ' quit', icon = ' ', key = 'q' },
+					},
+					footer = function()
+						local stats = require("lazy").stats()
+						local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+						return { "⚡ neovim loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms" }
+					end,
+					vertical_center = true
+				},
+			}
 		},
 
 		-- Others
